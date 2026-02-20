@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root { 
+    --green: #2ecc71; --red: #e74c3c;
+    --bg: #0b0d17; --card: #1a1f3c; --text: #ffffff; --border: #252b4d;
+  }
+  [data-theme="light"] {
+    --bg: #f0f2f5; --card: #ffffff; --text: #1a1f3c; --border: #dcdde1;
+  }
+
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 100px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+  
+  #header { position: sticky; top: 0; width: 100%; background: var(--card); padding: 30px 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border-bottom: 4px solid var(--green); text-align: center; }
+  #money { font-size: 3.8rem; font-weight: 900; color: var(--green); margin: 10px 0; letter-spacing: -2px; }
+  
+  /* Fixed Toggle Button - Clickable anywhere */
+  .mode-toggle { 
+    position: absolute; top: 25px; right: 25px; 
+    height: 45px; min-width: 120px;
+    border-radius: 50px; border: 2px solid var(--green); 
+    background: transparent; color: var(--green); 
+    font-weight: 800; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 20px;
+  }
+  .mode-toggle:hover { background: var(--green); color: white; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1400px; width: 95%; margin: 40px auto; }
+  
+  .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; position: relative; transition: 0.3s; text-align: center; }
+  .card:hover { transform: translateY(-8px); border-color: var(--green); }
+  
+  .qty-display { position: absolute; top: 15px; left: 15px; background: var(--green); color: white; padding: 5px 15px; border-radius: 10px; font-weight: 900; font-size: 1rem; }
+  .hidden { display: none; }
+
+  .emoji { font-size: 80px; margin-bottom: 15px; display: block; }
+  .name { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
+  .price { color: var(--green); font-weight: 800; font-size: 1.4rem; margin-bottom: 25px; }
+  
+  .controls { display: flex; gap: 10px; width: 100%; }
+  button.action { flex: 1; padding: 18px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; color: white; font-size: 1.1rem; }
+  .buy-btn { background: var(--green); }
+  .sell-btn { background: var(--red); }
+  button:disabled { opacity: 0.15; cursor: not-allowed; }
+  button:active:not(:disabled) { transform: scale(0.95); }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <button class="mode-toggle" id="themeSwitcher">🌓 Toggle Mode</button>
+  <div style="font-size: 1rem; opacity: 0.7; font-weight: 800; letter-spacing: 3px;">SPEND ELON MUSK'S 2026 FORTUNE</div>
+  <div id="money">$0</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  let balance = 852000000000; 
+  let displayBalance = 0;
+  let inventory = {};
+
+  const items = [
+    {id: 1, n: "Street Taco", p: 3, e: "🌮"}, {id: 2, n: "Hot Dog", p: 4, e: "🌭"}, {id: 3, n: "Energy Drink", p: 5, e: "⚡"},
+    {id: 4, n: "Movie Ticket", p: 18, e: "🎟️"}, {id: 5, n: "Video Game", p: 70, e: "🎮"}, {id: 6, n: "AirPods Pro", p: 249, e: "🎧"},
+    {id: 7, n: "iPhone 17 Pro", p: 1299, e: "📱"}, {id: 8, n: "MacBook Pro", p: 2499, e: "💻"}, {id: 9, n: "Designer Suit", p: 5000, e: "🕴️"},
+    {id: 10, n: "Rolex Watch", p: 45000, e: "⌚"}, {id: 11, n: "Tesla Model 3", p: 42000, e: "🚗"}, {id: 12, n: "Gold Bar", p: 88000, e: "🧱"},
+    {id: 13, n: "Cybertruck", p: 110000, e: "📐"}, {id: 14, n: "Home Theater", p: 150000, e: "🍿"}, {id: 15, n: "Ferrari SF90", p: 550000, e: "🏎️"},
+    {id: 16, n: "Suburban Home", p: 650000, e: "🏠"}, {id: 17, n: "McDonalds Shop", p: 1500000, e: "🍟"}, {id: 18, n: "Helicopter", p: 3500000, e: "🚁"},
+    {id: 19, n: "Private Zoo", p: 12000000, e: "🦁"}, {id: 20, n: "T-Rex Skeleton", p: 35000000, e: "🦖"}, {id: 21, n: "Private Island", p: 55000000, e: "🏝️"},
+    {id: 22, n: "Luxury Yacht", p: 120000000, e: "🛥️"}, {id: 23, n: "Mona Lisa", p: 870000000, e: "🖼️"}, {id: 24, n: "Private Jet", p: 75000000, e: "✈️"},
+    {id: 25, n: "NYC Penthouse", p: 95000000, e: "🏙️"}, {id: 26, n: "F1 Team", p: 1200000000, e: "🏁"}, {id: 27, n: "Skyscraper", p: 1800000000, e: "🏢"},
+    {id: 28, n: "Cruise Ship", p: 1100000000, e: "🚢"}, {id: 29, n: "NBA Team", p: 4500000000, e: "🏀"}, {id: 30, n: "NFL Team", p: 8500000000, e: "🏈"},
+    {id: 31, n: "SpaceX Starship", p: 2000000, e: "🚀"}, {id: 32, n: "Twitter (X)", p: 44000000000, e: "🐦"}, {id: 33, n: "Gigafactory", p: 5000000000, e: "🏭"},
+    {id: 34, n: "Nuclear Sub", p: 3800000000, e: "🌊"}, {id: 35, n: "Aircraft Carrier", p: 14000000000, e: "🚢"}, {id: 36, n: "Moon Base", p: 100000000000, e: "🌑"},
+    {id: 37, n: "Mars Colony", p: 200000000000, e: "👨‍🚀"}, {id: 38, n: "ISS Station", p: 150000000000, e: "🛰️"}, {id: 39, n: "Small Country", p: 98000000000, e: "🗺️"},
+    {id: 40, n: "Hyperloop", p: 12000000000, e: "🚇"}, {id: 41, n: "AI Supercomputer", p: 2500000000, e: "🤖"}, {id: 42, n: "Oil Rig", p: 850000000, e: "⛽"},
+    {id: 43, n: "Mega Stadium", p: 2200000000, e: "🏟️"}, {id: 44, n: "Diamond Mine", p: 4000000000, e: "💎"}, {id: 45, n: "Amazon (1%)", p: 25000000000, e: "📦"},
+    {id: 46, n: "Fusion Power", p: 45000000000, e: "🔥"}, {id: 47, n: "Historical Museum", p: 500000000, e: "🏛️"}, {id: 48, n: "Pyramid", p: 5000000000, e: "📐"},
+    {id: 49, n: "Space Telescope", p: 10000000000, e: "🔭"}, {id: 50, n: "Quantum PC Lab", p: 150000000, e: "💻"}
+  ].sort((a,b) => a.p - b.p);
+
+  items.forEach(i => inventory[i.id] = 0);
+
+  // Clickable anywhere logic
+  document.getElementById('themeSwitcher').addEventListener('click', function() {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+
+  function animateMoney() {
+    const diff = balance - displayBalance;
+    displayBalance += diff * 0.15; 
+    if (Math.abs(diff) < 1) displayBalance = balance;
+    document.getElementById("money").innerText = "$" + Math.round(displayBalance).toLocaleString();
+    requestAnimationFrame(animateMoney);
+  }
+
+  function updateItem(id, change, price) {
+    if (change > 0 && balance >= price) {
+      balance -= price;
+      inventory[id]++;
+    } else if (change < 0 && inventory[id] > 0) {
+      balance += price;
+      inventory[id]--;
+    }
+    render();
+  }
+
+  function render() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    items.forEach(item => {
+      const qty = inventory[item.id];
+      let div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <div class="qty-display ${qty === 0 ? 'hidden' : ''}">x${qty}</div>
+        <span class="emoji">${item.e}</span>
+        <div class="name">${item.n}</div>
+        <div class="price">$${item.p.toLocaleString()}</div>
+        <div class="controls">
+          <button class="action sell-btn" ${qty === 0 ? 'disabled' : ''} onclick="updateItem(${item.id}, -1, ${item.p})">Sell</button>
+          <button class="action buy-btn" ${balance < item.p ? 'disabled' : ''} onclick="updateItem(${item.id}, 1, ${item.p})">Buy</button>
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+  }
+
+  render();
+  animateMoney();
+</script>
+</body>
+</html>
