@@ -39,10 +39,14 @@ position:sticky;
 top:0;
 width:100%;
 background:var(--card);
-padding:20px 10px;
+padding:15px 15px 20px 15px;
 z-index:100;
 box-shadow:0 4px 20px rgba(0,0,0,.3);
 border-bottom:4px solid var(--green);
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:8px;
 text-align:center;
 }
 #money{
@@ -53,22 +57,17 @@ margin:10px 0;
 word-break:break-word;
 }
 .mode-toggle{
-position:absolute;
-top:15px;
-right:15px;
-height:42px;
-min-width:110px;
+align-self:flex-end;
+height:40px;
+min-width:100px;
 border-radius:50px;
 border:2px solid var(--green);
 background:transparent;
 color:var(--green);
 font-weight:800;
 cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
 padding:0 15px;
-font-size:.9rem;
+font-size:.85rem;
 }
 .mode-toggle:active{
 transform:scale(.95);
