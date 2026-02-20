@@ -3,106 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arcade Hub</title>
+
 <style>
-  :root { 
-    --green: #2ecc71; --accent: #3498db;
-    --bg: #0b0d17; --card: #1a1f3c; --text: #ffffff; --border: #252b4d;
-  }
-  [data-theme="light"] {
-    --bg: #f0f2f5; --card: #ffffff; --text: #1a1f3c; --border: #dcdde1;
-  }
+:root{
+--green:#2ecc71;
+--accent:#3498db;
+--bg:#0b0d17;
+--card:#1a1f3c;
+--text:#ffffff;
+--border:#252b4d;
+}
 
-  body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
-  
-  #header { width: 100%; background: var(--card); padding: 40px 0; text-align: center; border-bottom: 4px solid var(--accent); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-  h1 { margin: 0; font-size: 3rem; letter-spacing: -1px; font-weight: 900; }
-  p { opacity: 0.6; font-size: 1.1rem; margin-top: 10px; }
+[data-theme="light"]{
+--bg:#f0f2f5;
+--card:#ffffff;
+--text:#1a1f3c;
+--border:#dcdde1;
+}
 
-  .mode-toggle { 
-    position: absolute; top: 25px; right: 25px; 
-    height: 45px; min-width: 120px;
-    border-radius: 50px; border: 2px solid var(--accent); 
-    background: transparent; color: var(--accent); 
-    font-weight: 800; cursor: pointer; transition: 0.2s;
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 20px;
-  }
-  .mode-toggle:hover { background: var(--accent); color: white; }
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
 
-  .game-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; width: 90%; margin: 60px auto; }
-  
-  .game-card { background: var(--card); border-radius: 30px; border: 1px solid var(--border); overflow: hidden; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-  .game-card:hover { transform: scale(1.05); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-  
-  .game-image { width: 100%; height: 200px; background: linear-gradient(45deg, #1a1f3c, #3498db); display: flex; align-items: center; justify-content: center; font-size: 80px; }
-  
-  .game-info { padding: 30px; text-align: center; }
-  .game-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
-  .game-desc { font-size: 1rem; opacity: 0.7; margin-bottom: 25px; line-height: 1.5; }
-  
-  .launch-btn { 
-    display: inline-block; text-decoration: none;
-    background: var(--accent); color: white; 
-    padding: 15px 40px; border-radius: 15px; 
-    font-weight: 800; font-size: 1.1rem; 
-    transition: 0.2s; width: 80%;
-  }
-  .launch-btn:hover { background: #2980b9; transform: translateY(-3px); }
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+transition:.3s;
+}
 
-  .locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
-  .locked-badge { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
+#header{
+width:100%;
+background:var(--card);
+padding:20px 15px 25px 15px;
+border-bottom:4px solid var(--accent);
+box-shadow:0 4px 20px rgba(0,0,0,.3);
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:8px;
+text-align:center;
+position:relative;
+}
+
+.mode-toggle{
+align-self:flex-end;
+height:40px;
+min-width:100px;
+border-radius:50px;
+border:2px solid var(--accent);
+background:transparent;
+color:var(--accent);
+font-weight:800;
+cursor:pointer;
+padding:0 15px;
+font-size:.85rem;
+transition:.2s;
+}
+
+.mode-toggle:active{
+transform:scale(.95);
+}
+
+h1{
+margin:0;
+font-size:clamp(2rem,6vw,3rem);
+letter-spacing:-1px;
+font-weight:900;
+}
+
+p{
+opacity:.6;
+font-size:clamp(.9rem,3.5vw,1.1rem);
+margin:0;
+}
+
+.game-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+max-width:1200px;
+width:92%;
+margin:40px auto 60px auto;
+}
+
+.game-card{
+background:var(--card);
+border-radius:25px;
+border:1px solid var(--border);
+overflow:hidden;
+transition:.35s;
+position:relative;
+display:flex;
+flex-direction:column;
+}
+
+.game-card:hover{
+transform:translateY(-8px);
+border-color:var(--accent);
+box-shadow:0 20px 40px rgba(0,0,0,.4);
+}
+
+.game-image{
+width:100%;
+height:180px;
+background:linear-gradient(45deg,#1a1f3c,#3498db);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:60px;
+}
+
+.game-info{
+padding:25px;
+text-align:center;
+display:flex;
+flex-direction:column;
+flex-grow:1;
+}
+
+.game-title{
+font-size:1.4rem;
+font-weight:800;
+margin-bottom:8px;
+}
+
+.game-desc{
+font-size:.95rem;
+opacity:.7;
+margin-bottom:20px;
+line-height:1.4;
+flex-grow:1;
+}
+
+.launch-btn{
+display:inline-block;
+text-decoration:none;
+background:var(--accent);
+color:white;
+padding:14px;
+border-radius:12px;
+font-weight:800;
+font-size:.95rem;
+transition:.2s;
+width:100%;
+}
+
+.launch-btn:active{
+transform:scale(.97);
+}
+
+.locked{
+opacity:.5;
+filter:grayscale(1);
+pointer-events:none;
+}
+
+.locked-badge{
+position:absolute;
+top:15px;
+left:15px;
+background:rgba(0,0,0,.7);
+color:white;
+padding:5px 12px;
+border-radius:8px;
+font-weight:bold;
+font-size:.75rem;
+}
+
+@media (min-width:768px){
+.game-image{
+height:200px;
+font-size:80px;
+}
+.game-title{
+font-size:1.8rem;
+}
+.game-desc{
+font-size:1rem;
+}
+.launch-btn{
+font-size:1.1rem;
+padding:16px;
+}
+}
 </style>
 </head>
 <body>
 
 <div id="header">
-  <button class="mode-toggle" id="themeSwitcher">🌓 Toggle Mode</button>
-  <h1>ARCADE HUB</h1>
-  <p>Select a challenge to begin</p>
+<button class="mode-toggle" id="themeSwitcher">🌓 Toggle</button>
+<h1>ARCADE HUB</h1>
+<p>Select a challenge to begin</p>
 </div>
 
 <div class="game-container">
-  
-  <div class="game-card">
-    <div class="game-image">🚀</div>
-    <div class="game-info">
-      <div class="game-title">Spend Elon's Money</div>
-      <div class="game-desc">You have $852 Billion. Can you manage to spend it all on the most expensive items in the world?</div>
-      <a href="spend.html" class="launch-btn">PLAY NOW</a>
-    </div>
-  </div>
 
-  <div class="game-card locked">
-    <div class="locked-badge">COMING SOON</div>
-    <div class="game-image">📉</div>
-    <div class="game-info">
-      <div class="game-title">Stock Market Sim</div>
-      <div class="game-desc">Turn $100 into billions... or lose it all. Real-time market data challenge.</div>
-      <a href="#" class="launch-btn">LOCKED</a>
-    </div>
-  </div>
+<div class="game-card">
+<div class="game-image">🚀</div>
+<div class="game-info">
+<div class="game-title">Spend Elon's Money</div>
+<div class="game-desc">You have $852 Billion. Can you manage to spend it all on the most expensive items in the world?</div>
+<a href="spend.html" class="launch-btn">PLAY NOW</a>
+</div>
+</div>
 
-  <div class="game-card locked">
-    <div class="locked-badge">COMING SOON</div>
-    <div class="game-image">🏢</div>
-    <div class="game-info">
-      <div class="game-title">Startup Tycoon</div>
-      <div class="game-desc">Build your own tech empire from a garage to a global powerhouse.</div>
-      <a href="#" class="launch-btn">LOCKED</a>
-    </div>
-  </div>
+<div class="game-card locked">
+<div class="locked-badge">COMING SOON</div>
+<div class="game-image">📉</div>
+<div class="game-info">
+<div class="game-title">Stock Market Sim</div>
+<div class="game-desc">Turn $100 into billions... or lose it all. Real-time market data challenge.</div>
+<a href="#" class="launch-btn">LOCKED</a>
+</div>
+</div>
+
+<div class="game-card locked">
+<div class="locked-badge">COMING SOON</div>
+<div class="game-image">🏢</div>
+<div class="game-info">
+<div class="game-title">Startup Tycoon</div>
+<div class="game-desc">Build your own tech empire from a garage to a global powerhouse.</div>
+<a href="#" class="launch-btn">LOCKED</a>
+</div>
+</div>
 
 </div>
 
 <script>
-  // Clickable Theme Toggle
-  document.getElementById('themeSwitcher').addEventListener('click', function() {
-    const root = document.documentElement;
-    const current = root.getAttribute('data-theme');
-    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-  });
+document.getElementById("themeSwitcher").addEventListener("click",()=>{
+const root=document.documentElement;
+root.setAttribute("data-theme",
+root.getAttribute("data-theme")==="dark"?"light":"dark");
+});
 </script>
 
 </body>
-
 </html>
